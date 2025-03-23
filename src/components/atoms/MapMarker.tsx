@@ -1,8 +1,12 @@
 import { Marker } from 'react-leaflet';
 import L from 'leaflet';
 
-const MapMarker = ({ position, children }) => {
-  // Custom ISS Icon
+interface MapMarkerProps {
+  position: { lat: number; lng: number };
+  children: React.ReactNode;
+}
+
+export const MapMarker = ({ position, children }: MapMarkerProps) => {
   const issIcon = L.icon({
     iconUrl: 'https://img.icons8.com/color/48/iss.png', // ISS icon from icons8
     iconSize: [48, 48],
@@ -15,5 +19,3 @@ const MapMarker = ({ position, children }) => {
     </Marker>
   );
 };
-
-export { MapMarker };
