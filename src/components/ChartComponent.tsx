@@ -41,6 +41,7 @@ export const ChartComponent: React.FC = () => {
         );
 
         if (data) {
+          console.log(data)
           setChartData(createChartData(data));
           setChartOptions(createOptions(data, true, true));
         }
