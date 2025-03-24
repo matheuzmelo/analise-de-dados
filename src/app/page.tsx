@@ -1,19 +1,57 @@
 'use client'
-import { useState, useEffect } from 'react';
-import { getDadoIbgeByFullURL, dataReturn, dataInfo, getAllLocalities } from '../utils/ibgeAPI';
-import { useTheme, useMediaQuery } from '@mui/material';
-import { CircularProgress } from '@mui/material';
-import { CalendarBlank, Magnify, MagnifyRemoveOutline, MathCompass, CursorDefaultOutline, GestureTap } from 'mdi-material-ui';
-import { Chart, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Title, Tooltip, Legend, RadialLinearScale, ArcElement } from 'chart.js';
-import LocationAutocomplete from '@/components/LocationAutocomplete';
-import DataOptionAutocomplete from '@/components/DataOptionAutocomplete';
-import DataOptions from '@/components/DataOptions';
-import Charts from '@/components/Charts';
-import { checkData, checkMaxYears } from '../utils/helpers';
+import { ChartLine } from '@/components/organisms/ChartLine';
+import { Filters } from '@/components/organisms/Filters';
+import { HighlightsCards } from '@/components/organisms/HighlightsCards';
+import { CircularProgress, useMediaQuery, useTheme } from '@mui/material';
+import { ArcElement, BarElement, CategoryScale, Chart, Filler, Legend, LinearScale, LineElement, PointElement, RadialLinearScale, Title, Tooltip } from 'chart.js';
+import AccountMultipleOutline from 'mdi-material-ui/AccountMultipleOutline';
+import Cow from 'mdi-material-ui/Cow';
+import CurrencyUsd from 'mdi-material-ui/CurrencyUsd';
+import MagnifyRemoveOutline from 'mdi-material-ui/MagnifyRemoveOutline';
+import { useEffect, useState } from 'react';
+import { Bar, PolarArea, Scatter } from 'react-chartjs-2';
+import { createChartData, createOptions, dataInfo, dataReturn, getAllLocalities, getDadoIbgeByFullURL, getYearsFromUrl } from '../utils/ibgeAPI';
+import { ChartScatter } from '@/components/organisms/ChartScatter';
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Title, Tooltip, Legend, BarElement, RadialLinearScale, ArcElement);
 
-function IBGEDataPage() {
+interface LocationOptions {
+  [key: string]: string;
+}
+
+const checkData = (data: dataReturn | null | undefined): boolean => (
+  !!(data && data.data && data.data[0] && data.data[0].value)
+)
+
+const checkMaxYears = (dataOption: string): boolean => (
+  getYearsFromUrl(dataInfo[dataOption].link).length > 40
+)
+
+const getDadoTypeIcon = (type: string) => {
+  switch (type) {
+    case 'Dados Agropecuários':
+      return <Cow className='mr-2' fontSize='small' />
+    case 'Dados Demográficos':
+      return <AccountMultipleOutline className='mr-2' fontSize='small' />
+    case 'Dados Econômicos':
+      return <CurrencyUsd className='mr-2' fontSize='small' />
+    default: return <></>
+  }
+}
+
+const getRegiaoByLevel = (level: number): string => {
+  switch (level) {
+    case 1:
+      return 'País'
+    case 3:
+      return 'Estados'
+    case 6:
+      return 'Cidades'
+  }
+  return 'Outras Localidades'
+}
+
+export default function IBGEDataPage() {
   const theme = useTheme();
   const [data, setData] = useState<dataReturn | null | undefined>();
   const [filteredData, setFilteredData] = useState<dataReturn | null | undefined>();
@@ -57,44 +95,44 @@ function IBGEDataPage() {
 
   return (
     <div className='h-full flex flex-col items-center w-full px-3'>
-      <h1 className='text-4xl text-white font-bold my-3 text-center'>Dados do IBGE</h1>
-      <div className='flex flex-col space-y-2 w-full items-center justify-center sm:flex-row sm:space-x-4 sm:space-y-0 pb-2'>
-        <LocationAutocomplete
-          location={location}
-          locationOptions={locationOptions}
-          setLocation={setLocation}
-          setData={setData}
-        />
-        <DataOptionAutocomplete
-          dataOption={dataOption}
-          setDataOption={setDataOption}
-          setIsPercentage={setIsPercentage}
-          setIsMaxYears={setIsMaxYears}
-          setData={setData}
-        />
-        <DataOptions
-          dataOption={dataOption}
-          filteredData={filteredData}
-          isPercentage={isPercentage}
-          setIsPercentage={setIsPercentage}
-          isMaxYears={isMaxYears}
-          setIsMaxYears={setIsMaxYears}
-          isContrast={isContrast}
-          setIsContrast={setIsContrast}
-        />
+      <div className='w-full p-3'>
+        <h1 className='text-4xl text-white font-bold my-3 text-center'>Relatório geral de dados IBGE</h1>
       </div>
+      <Filters
+        location={location}
+        locationOptions={locationOptions}
+        dataOption={dataOption}
+        dataInfo={dataInfo}
+        filteredData={filteredData}
+        isPercentage={isPercentage}
+        isMaxYears={isMaxYears}
+        isContrast={isContrast}
+        handleChangeLocation={handleChangeLocation}
+        handleChangeDataOption={handleChangeDataOption}
+        handleChangeIsPercentage={handleChangeIsPercentage}
+        handleChangeIsMaxYear={handleChangeIsMaxYear}
+        handleChangeIsContrast={handleChangeIsContrast}
+        getRegiaoByLevel={getRegiaoByLevel}
+        getDadoTypeIcon={getDadoTypeIcon}
+        checkData={checkData}
+        checkMaxYears={checkMaxYears}
+      />
       {filteredData && checkData(filteredData) && (
         <>
-          <div className='w-full flex flex-col text-xs sm:text-sm pt-3 sm:pt-0 max-w-screen-xl sm:-mb-8'>
-            <p><CalendarBlank fontSize='small' /> Dados de <span style={{ color: theme.palette.primary.light }} className='font-semibold'>{filteredData.data[0].name}</span> até <span style={{ color: theme.palette.primary.light }} className='font-semibold'>{filteredData.data[filteredData.data.length - 1].name}</span></p>
-            <p><Magnify fontSize='small' /> Números de resultados: {filteredData.data.length}</p>
-            <p><MathCompass fontSize='small' /> Unidade de medida: {filteredData.unit.toLocaleLowerCase()}</p>
-          </div>
-          <Charts filteredData={filteredData} isContrast={isContrast} />
-          <div className='p-3 lg:p-0'>
-            <p className='text-xs opacity-60 text-center'>{isBiggerThanLg
-              ? <>Arraste o mouse por cima dos gráficos para mais informação <CursorDefaultOutline fontSize='small' /></>
-              : <>Toque nos gráficos para mais informação <GestureTap fontSize='small' /></>} </p>
+          <HighlightsCards year_tri_init={filteredData.data[0].name} year_tri_end={filteredData.data[filteredData.data.length - 1].name} result={filteredData.data.length} metric_unit={filteredData.unit.toLocaleLowerCase()} />
+
+          <div className='max-w-[1300px] grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center items-center w-full sm:h-auto gap-4 grid-rows-2'>
+
+            <ChartLine data={createChartData(filteredData, isContrast)} options={createOptions(filteredData, true, true)} />
+
+            <ChartScatter data={createChartData(filteredData, isContrast, true)} options={createOptions(filteredData, true, true)} />
+
+            <div className='lg:col-span-2 lg:row-span-2 flex justify-center items-center max-h-[564px]'>
+              <PolarArea data={createChartData(filteredData, isContrast)} options={createOptions(filteredData)} />
+            </div>
+            <div className='flex justify-center items-center col-span-1 lg:col-span-2 max-h-[432px]'>
+              <Bar data={createChartData(filteredData, isContrast)} options={createOptions(filteredData, true, true)} />
+            </div>
           </div>
         </>
       )}
@@ -114,5 +152,3 @@ function IBGEDataPage() {
     </div>
   );
 }
-
-export default IBGEDataPage;
