@@ -56,46 +56,13 @@ export default function IBGEDataPage() {
   const [data, setData] = useState<dataReturn | null | undefined>();
   const [filteredData, setFilteredData] = useState<dataReturn | null | undefined>();
   const [dataOption, setDataOption] = useState<string>(Object.keys(dataInfo)[0]);
-  const [locationOptions, setLocationOptions] = useState<LocationOptions>({});
+  const [locationOptions, setLocationOptions] = useState<{ [key: string]: string }>({});
   const [location, setLocation] = useState<string>("Brasil")
   const [isPercentage, setIsPercentage] = useState<boolean>(false);
   const [isMaxYears, setIsMaxYears] = useState<boolean>(false);
   const [isContrast, setIsContrast] = useState<boolean>(false);
 
   const isBiggerThanLg = useMediaQuery(theme.breakpoints.up('lg'))
-
-  const handleChangeIsContrast = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsContrast(event.target.checked);
-  };
-
-  const handleChangeIsPercentage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPercentage(event.target.checked);
-  };
-
-  const handleChangeIsMaxYear = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsMaxYears(event.target.checked);
-  };
-
-  const handleChangeLocation = (event: React.SyntheticEvent<Element, Event>, newValue: string | null) => {
-    if (newValue !== null) {
-      setLocation(newValue);
-      setData(undefined);
-    }
-  };
-
-  const handleChangeDataOption = (event: React.SyntheticEvent<Element, Event>, newValue: string | null) => {
-    if (newValue !== null) {
-      setDataOption(newValue);
-      if (!dataInfo[newValue].percentage) {
-        setIsPercentage(false);
-      }
-      if (!checkMaxYears(newValue)) {
-        setIsMaxYears(false);
-      }
-
-      setData(undefined);
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
