@@ -11,6 +11,7 @@ import MagnifyRemoveOutline from 'mdi-material-ui/MagnifyRemoveOutline';
 import { useEffect, useState } from 'react';
 import { Bar, PolarArea, Scatter } from 'react-chartjs-2';
 import { createChartData, createOptions, dataInfo, dataReturn, getAllLocalities, getDadoIbgeByFullURL, getYearsFromUrl } from '../utils/ibgeAPI';
+import { ChartScatter } from '@/components/organisms/ChartScatter';
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Title, Tooltip, Legend, BarElement, RadialLinearScale, ArcElement);
 
@@ -157,9 +158,8 @@ export default function IBGEDataPage() {
 
             <ChartLine data={createChartData(filteredData, isContrast)} options={createOptions(filteredData, true, true)} />
 
-            <div className='flex justify-center items-center max-h-[432px]'>
-              <Scatter data={createChartData(filteredData, isContrast, true)} options={createOptions(filteredData, true, true)} />
-            </div>
+            <ChartScatter data={createChartData(filteredData, isContrast, true)} options={createOptions(filteredData, true, true)} />
+
             <div className='lg:col-span-2 lg:row-span-2 flex justify-center items-center max-h-[564px]'>
               <PolarArea data={createChartData(filteredData, isContrast)} options={createOptions(filteredData)} />
             </div>
