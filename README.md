@@ -1,11 +1,9 @@
-## IBGE Data Charts 📊
+## Analise de dados
 
-IBGE Data Charts unleash the power of IBGE data through dynamic charts and visualizations. Explore economic trends, demographic shifts, and more across geographical levels. IBGE Data Charts make complex data accessible and actionable for everyone.
+Este projeto tem o intuíto de apresentar de maneira simples e intuítiva uma forma de visualizar os dados de produção do Brasil.
+Trazendo três tipos de gráficos para diferentes formas de análise.
 
-This application includes all Brazilian states and cities (over 5,000) and a wealth of data provided by the IBGE API.
-
-### Technologies Used
-
+### Técnologias usadas
 - Next.js
 - Tailwind CSS
 - Axios
@@ -13,7 +11,6 @@ This application includes all Brazilian states and cities (over 5,000) and a wea
 - Other technologies
 
 ### File Structure
-
 ```
 ./analise-de-dados
 ├── public
@@ -30,34 +27,28 @@ This application includes all Brazilian states and cities (over 5,000) and a wea
 └── ...
 ```
 
-### Commands to Build the Project Locally
+### Comandos dee montagem de ambiente
 
-1. **Clone the repository:**
+1. **Clone o repositório:**
     ```sh
-    git clone https://github.com/ViniciusCestarii/IBGE-data-charts.git
-    cd IBGE-data-charts
+    git clone https://github.com/matheuzmelo/analise-de-dados.git
+    cd analise-de-dados
     ```
 
-2. **Install dependencies:**
+2. **Instle as dependências:**
     ```sh
     npm install
     ```
 
-3. **Run the development server:**
+3. **Execute o projeto:**
     ```sh
     npm run dev
     ```
+* OBS.: Por padrão o projeto rodará na porta 3000. Então basta acessar a rota. http://localhost:3000
 
-4. **Build for production:**
-    ```sh
-    npm run build
-    ```
+### Fontes:
 
-5. **Start the production server:**
-    ```sh
-    npm start
-    ```
-
-### Check it out
-
-Explore the application here: [IBGE Data Charts](https://ibge-data-charts.vercel.app/)
+* [IBGE disponibiliza cinco novas APIs para acesso a dados e serviços geodésicos ](https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/35892-ibge-disponibiliza-cinco-novas-apis-para-acesso-a-dados-e-servicos-geodesicos)
+* [Metadados Estatísticos do IBGE](https://www.gov.br/conecta/catalogo/apis/metadados-estatisticos-do-ibge)
+* [API de serviço de dados](https://servicodados.ibge.gov.br/api/docs/)
+* [API de localidades](https://servicodados.ibge.gov.br/api/docs/localidades)
